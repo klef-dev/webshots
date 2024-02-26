@@ -9,19 +9,7 @@ const regex = new RegExp(
   "i" // fragment locator
 );
 
-export const checkUrl = (url: string) => {
-  if (regex.test(url)) {
-    return true;
-  } else {
-    return false;
-  }
-  //   try {
-  //     new URL(url);
-  //     return true;
-  //   } catch (err) {
-  //     return false;
-  //   }
-};
+export const checkUrl = (url: string) => (regex.test(url) ? true : false);
 
 export const sleep = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));

@@ -5,6 +5,7 @@ import React, { Suspense } from "react";
 import { Loader, Footer } from "../components";
 import { MainLayout } from "../layout";
 import { checkUrl, debounce } from "../lib/helper";
+import axios from "axios";
 
 const Home: NextPage = () => {
   const [url, setUrl] = React.useState<string>("");
@@ -32,13 +33,13 @@ const Home: NextPage = () => {
     if (checkUrl(url)) {
       setError("");
       setLoading(true);
-      fetch("/api/screenshot?url=" + url)
-        .then((res) => res.json())
-        .then((data) => {
+      axios("/api/screenshot?url=" + url, {})
+        .then(({ data }) => {
           setScreenShot(data?.image);
         })
         .catch((err) => {
-          console.log(err);
+          if (err.response) setError(err.response.data.message);
+          else setError("Something went wrong");
         })
         .finally(() => setLoading(false));
     } else {
@@ -52,7 +53,7 @@ const Home: NextPage = () => {
         if (checkUrl(url)) {
           setError("");
         }
-      }, 1000)();
+      }, 5000)();
     }
   }, [url, error]);
 
