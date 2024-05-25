@@ -16,7 +16,7 @@ export default async function screenshot(
     height: _options?.height || 695,
   });
   await page.goto(url);
-  await page.waitForLoadState("networkidle");
+  await page.waitForLoadState();
   const buffer = await page.screenshot({ type: _options?.type || "png" });
   await browser.close();
   return buffer;

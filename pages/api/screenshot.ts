@@ -49,12 +49,7 @@ export default async function handler(
   }
 
   try {
-    const img = await screenshot(url?.toString() || `${process.env.WEB_URL}`, {
-      height,
-      quality,
-      type,
-      width,
-    });
+    const img = await screenshot(url, { height, quality, type, width });
     const image = img.toString("base64");
     const id = nanoid();
     writeFileSync(`./public/images/${id}.${type || "png"}`, image, "base64");
