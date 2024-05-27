@@ -64,19 +64,18 @@ export default async function handler(
     // Ensure the directory exists
     if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
 
-    writeFileSync(path.join(dir, `${id}.${type || "png"}`), image, "base64");
+    const file = path.join(dir, `${id}.${type || "png"}`);
+
+    writeFileSync(file, image, "base64");
 
     const formData = new FormData();
-    formData.append(
-      "file",
-      createReadStream(`./public/images/${id}.${type || "png"}`)
-    );
+    formData.append("file", createReadStream(file));
     formData.append("upload_preset", "screenshots");
 
     const { data } = await axios.post(process.env.UPLOAD_URL || "", formData);
 
     // delete the image from the server
-    unlinkSync(`./public/images/${id}.${type || "png"}`);
+    unlinkSync(file);
 
     res.status(200).json({
       id: {
