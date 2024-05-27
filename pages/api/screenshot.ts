@@ -1,11 +1,18 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import axios from "axios";
 import FormData from "form-data";
-import { createReadStream, unlinkSync, writeFileSync } from "fs";
+import {
+  createReadStream,
+  existsSync,
+  mkdirSync,
+  unlinkSync,
+  writeFileSync,
+} from "fs";
 import { nanoid } from "nanoid";
 import type { NextApiRequest, NextApiResponse } from "next";
 import validUrl from "valid-url";
 import screenshot from "../../lib/screenshot";
+import path from "path";
 
 type Data = {
   id?: {
@@ -52,7 +59,12 @@ export default async function handler(
     const img = await screenshot(url, { height, quality, type, width });
     const image = img.toString("base64");
     const id = nanoid();
-    writeFileSync(`./public/images/${id}.${type || "png"}`, image, "base64");
+    const dir = path.join(__dirname, "public", "images");
+
+    // Ensure the directory exists
+    if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+
+    writeFileSync(path.join(dir, `${id}.${type || "png"}`), image, "base64");
 
     const formData = new FormData();
     formData.append(
